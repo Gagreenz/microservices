@@ -1,5 +1,4 @@
 import { AuthGuard } from '@app/shared/authGuard';
-import { UserEntity } from '@app/shared/entities/user.entity';
 import { 
   Body,
   Controller,
@@ -9,13 +8,11 @@ import {
   UseGuards,
   Delete,
   Put,
-  Headers,
   Query
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateProfileDto } from 'apps/profile/src/dto/createProfileDto';
+
 import { UpdateProfileDto } from 'apps/profile/src/dto/updateProfileDto';
-import { map } from 'rxjs';
 
 @Controller()
 export class AppController {
@@ -24,6 +21,8 @@ export class AppController {
     @Inject('PROFILE_SERVICE') private readonly profileService: ClientProxy,
   ) {}
 
+
+  //просто предположим что это происходит когда пользователь в процеесе регистрации зафигачил кучу данных и фронт нормально передал все в одном запросе
   @Post('auth/register')
   async register(
     @Body('username') username: string,
@@ -32,16 +31,22 @@ export class AppController {
     @Body('phone') phone: string,
     @Body('name') name: string
   ) {
-    const user = await this.authService.send(
+
+    const profile = await this.profileService.send(
+      {cmd: 'create'},
+      { name, phone }
+    ).toPromise();
+
+    return this.authService.send(
       { cmd: 'register'},
       {
         username,
         password,
         role,
+        profileId: profile.id,
       },
-    ).toPromise();
+    )
 
-    return this.profileService.send({cmd: 'create'},{ name, phone, user })
   }
 
   @Post('auth/login')
@@ -67,27 +72,28 @@ export class AppController {
   }
 
   @Get('profile/getAll')
-  getByAll(){
+  getAll(){
       return this.profileService.send({cmd: 'get-all' },{});
   }
 
   @Get('profile/getById')
-  getById(@Headers() header){
-      const id = header.id;
-      return this.profileService.send({ cmd: 'get-by-id' },{ id });
+  getById(@Query('id') id: number){
+      return this.profileService.send({ cmd: 'get-by-id' }, id );
   }
 
   @Delete('profile/delete')
   @UseGuards(AuthGuard)
   async delete(@Query('id') id: number) {
-      return await this.profileService.send({ cmd: 'delete'},{ id });
+      return await this.profileService.send({ cmd: 'delete'}, id );
   }
 
   
   @Put('profile/update')
   @UseGuards(AuthGuard)
   update(@Body() updateProfileDto : UpdateProfileDto){
-      this.profileService.send({ cmd: 'update'},{ updateProfileDto});
+      return this.profileService.send({ cmd: 'update'}, updateProfileDto);
   }
+
+  
 
 }

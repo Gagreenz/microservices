@@ -16,7 +16,7 @@ export class ProfileController {
   @MessagePattern({ cmd: "create"})
   async create(@Ctx() context, @Payload() createProfileDto: CreateProfileDto): Promise<ProfileEntity> {
     this.sharedService.acknowledgeMessage(context);
-
+    
     return await this.profileService.create(createProfileDto);
   }
 
@@ -44,7 +44,7 @@ export class ProfileController {
   @MessagePattern({ cmd: 'update'})
   async update(@Ctx() context,@Payload() updateProfile: UpdateProfileDto): Promise<ProfileEntity>{
     this.sharedService.acknowledgeMessage(context);
-
+    console.log(updateProfile);
     return this.profileService.update(updateProfile);
   }
 }

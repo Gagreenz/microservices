@@ -6,10 +6,9 @@ import { JwtStrategy } from './jwtStrategy';
 import { JwtGuard } from './jwtGuard';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserRepository } from '@app/shared/db/repository/userRepository';
+import { UserRepository } from '@app/shared/db/repository/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '@app/shared/entities/user.entity';
-import { ProfileEntity } from '@app/shared/entities/profile.entity';
 import { UserDbModule } from '@app/shared/db/userDbModule';
 
 
@@ -24,8 +23,7 @@ import { UserDbModule } from '@app/shared/db/userDbModule';
     }),
     UserDbModule,
     TypeOrmModule.forFeature([
-      UserEntity,
-      ProfileEntity
+      UserEntity
     ]),
     SharedModule
   ],

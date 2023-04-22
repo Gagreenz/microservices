@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 import { UserEntity } from './user.entity';
 
 
-@Entity()
+@Entity({ database: 'profiles'})
 export class ProfileEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -13,6 +13,4 @@ export class ProfileEntity {
   @Column()
   phone: string;
 
-  @OneToOne(() => UserEntity, user => user.profile)
-  user: UserEntity;
 }

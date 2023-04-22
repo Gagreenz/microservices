@@ -5,17 +5,16 @@ import { ProfileDbModule } from '@app/shared/db/profileDbModule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProfileEntity } from '@app/shared/entities/profile.entity';
 import { SharedModule, SharedService } from '@app/shared';
-import { ProfileRepository } from '@app/shared/db/repository/profileRepository';
+import { ProfileRepository } from '@app/shared/db/repository/profile.repository';
 import { UserEntity } from '@app/shared/entities/user.entity';
 
 @Module({
   imports: [
     ProfileDbModule,
     TypeOrmModule.forFeature([
-      ProfileEntity,
-      UserEntity,
+      ProfileEntity
     ]),
-    SharedModule
+    SharedModule,
   ],
   controllers: [ProfileController],
   providers: [

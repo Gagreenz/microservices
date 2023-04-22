@@ -8,8 +8,8 @@ import { Repository } from "typeorm";
 export class ProfileRepository extends BaseAbstractRepository<ProfileEntity>{
     constructor(
         @InjectRepository(ProfileEntity) 
-        private readonly UserRepository: Repository<ProfileEntity>,
+        private readonly profileRepository: Repository<ProfileEntity>,
     ) {
-        super(UserRepository);
+        super(profileRepository);
     }
 }

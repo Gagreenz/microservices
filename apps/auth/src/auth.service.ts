@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepository } from '@app/shared/db/repository/userRepository';
+import { UserRepository } from '@app/shared/db/repository/user.repository';
 import { UserEntity } from '@app/shared/entities/user.entity';
 
 import { LoginUserDto } from './dto/loginUserDto';
@@ -17,8 +17,7 @@ export class AuthService {
 
 
   async register(newUser: NewUserDto): Promise<UserEntity> {
-    const { username, password, role } = newUser;
-
+    const { username, password, role, profileId } = newUser;
     const existingUser = await this.usersRepository.findByCondition({where:{ username}});
 
     if(existingUser){
@@ -28,7 +27,8 @@ export class AuthService {
     const savedUser = await this.usersRepository.save({
       username,
       password,
-      role
+      role,
+      profileId
     });
 
     return savedUser;

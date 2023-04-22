@@ -45,6 +45,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/shared/tsconfig.lib.json"
       }
+    },
+    "textblock": {
+      "type": "application",
+      "root": "apps/textblock",
+      "entryFile": "main",
+      "sourceRoot": "apps/textblock/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/textblock/tsconfig.app.json"
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ProfileRepository } from '@app/shared/db/repository/profileRepository';
+import { ProfileRepository } from '@app/shared/db/repository/profile.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateProfileDto } from './dto/createProfileDto';
 import { ProfileEntity } from '@app/shared/entities/profile.entity';
@@ -12,14 +12,11 @@ export class ProfileService {
   ) {}
 
   async create(profileCreate: CreateProfileDto): Promise<ProfileEntity> {
-    const { name, phone, user } = profileCreate;
+    const { name, phone } = profileCreate;
     const savedProfile =  await this.profileRepository.save({
       name,
-      phone,
-      user
+      phone
     });
-
-
 
     return savedProfile;
   }
@@ -35,12 +32,20 @@ export class ProfileService {
   async delete(id: number): Promise<ProfileEntity> {
     const profile = await this.getById(id);
 
+    if(!profile) {
+      throw new Error("Profile does`n exist");
+    }
+
     return await this.profileRepository.remove(profile);
   }
 
   async update(updateProfile: UpdateProfileDto): Promise<ProfileEntity> {
     const { id, name, phone} = updateProfile;
     const profile = await this.getById(id);
+
+    if(!profile) {
+      throw new Error("Profile does`n exist");
+    }
 
     profile.name = name;
     profile.phone = phone;
