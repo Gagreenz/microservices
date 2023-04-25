@@ -6,6 +6,8 @@ import { TextblockRepository } from '@app/shared/db/repository/textblock.reposit
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TextblockEntity } from '@app/shared/entities/textblock.entity';
 import { UserDbModule } from '@app/shared/db/userDbModule';
+import { FileEntity } from '@app/shared/entities/file.entity';
+import { FileRepository } from '@app/shared/db/repository/file.repository';
 
 @Module({
   imports: [
@@ -13,6 +15,7 @@ import { UserDbModule } from '@app/shared/db/userDbModule';
     UserDbModule,
     TypeOrmModule.forFeature([
       TextblockEntity,
+      FileEntity,
     ])
   ],
   controllers: [TextblockController],
@@ -28,6 +31,10 @@ import { UserDbModule } from '@app/shared/db/userDbModule';
     {
       provide: 'TextblockRepository',
       useClass: TextblockRepository,
+    },
+    {
+      provide: 'FileRepository',
+      useClass: FileRepository,
     }
   ],
 })

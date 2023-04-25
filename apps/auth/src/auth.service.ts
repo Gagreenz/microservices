@@ -17,7 +17,7 @@ export class AuthService {
 
 
   async register(newUser: NewUserDto): Promise<UserEntity> {
-    const { username, password, role, profileId } = newUser;
+    const { username, password, roles, profileId } = newUser;
     const existingUser = await this.usersRepository.findByCondition({where:{ username}});
 
     if(existingUser){
@@ -27,7 +27,7 @@ export class AuthService {
     const savedUser = await this.usersRepository.save({
       username,
       password,
-      role,
+      roles,
       profileId
     });
 

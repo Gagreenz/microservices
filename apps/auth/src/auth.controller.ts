@@ -16,6 +16,7 @@ export class AuthController {
   @MessagePattern({ cmd: "register"})
   async register(@Ctx() context: RmqContext, @Payload() newUser: NewUserDto): Promise<UserEntity> {
       this.sharedService.acknowledgeMessage(context);
+
       return await this.authService.register(newUser)
   }
 

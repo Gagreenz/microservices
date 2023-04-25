@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn,ManyToOne,JoinColumn } from 'typeorm';
+import { FileEntity } from './file.entity';
 
 @Entity()
 export class TextblockEntity {
@@ -11,9 +12,9 @@ export class TextblockEntity {
   @Column()
   title: string;
 
-//   @ManyToOne(() => File, { nullable: true })
-//   @JoinColumn({ name: 'image_id' })
-//   image: File;
+  @ManyToOne(() => FileEntity, { nullable: true })
+  @JoinColumn()
+  file: FileEntity;
 
   @Column()
   text: string;

@@ -3,12 +3,14 @@ import { TextblockEntity } from '@app/shared/entities/textblock.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateTextblockDto } from './dto/createTextblockDto';
 import { UpdateTextblockDto } from './dto/updateTextblockDto';
+import { FileRepository } from '@app/shared/db/repository/file.repository';
 
 @Injectable()
 export class TextblockService {
 
   constructor(
     @Inject('TextblockRepository') private readonly textblockRepository: TextblockRepository,
+    @Inject('FileRepository') private readonly fileReposotory: FileRepository,
   ) 
   {}
 
@@ -23,11 +25,14 @@ export class TextblockService {
   async create(textblockCreate: CreateTextblockDto): Promise<TextblockEntity> {
     const { name, title, text, group} = textblockCreate;
     
+    const file = await this.fileReposotory.save(textblockCreate.file);
+
     const savedTextblock =  await this.textblockRepository.save({
       name,
       title,
       text,
-      group
+      group,
+      file
     });
 
     return savedTextblock;
@@ -41,10 +46,14 @@ export class TextblockService {
       throw new Error("Textblock does`n exist");
     }
 
+    const file = await this.fileReposotory.save(updateTextblock.file);
+    
     textblock.name = name;
     textblock.title = title;
     textblock.text = text;
     textblock.group = group;
+    if(file)
+      textblock.file = file;
 
     return await this.textblockRepository.save(textblock);
   }

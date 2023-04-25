@@ -1,5 +1,4 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm"
-import { ProfileEntity } from "./profile.entity";
 
 @Entity({ database: 'users'})
 export class UserEntity {
@@ -13,7 +12,7 @@ export class UserEntity {
     password: string;
   
     @Column()
-    role: string;
+    roles: string;
 
     // связать таблицы в разных бд не получилось поэтому используем id profile
     // и устанавливаем его в уникальное значение для избежания ситуаций когда 100 пользователей ссылаются на один профиль

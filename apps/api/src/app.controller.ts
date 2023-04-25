@@ -1,4 +1,4 @@
-import { AuthGuard } from '@app/shared/authGuard';
+import { AuthGuard } from '@app/shared/authentication/authGuard';
 import { 
   Body,
   Controller,
@@ -26,7 +26,7 @@ export class AppController {
   @Post('auth/register')
   async register(
     @Body('username') username: string,
-    @Body('role') role: string,
+    @Body('roles') roles: string,
     @Body('password') password: string,
     @Body('phone') phone: string,
     @Body('name') name: string
@@ -42,7 +42,7 @@ export class AppController {
       {
         username,
         password,
-        role,
+        roles,
         profileId: profile.id,
       },
     )

@@ -1,4 +1,8 @@
-import { AuthGuard } from '@app/shared/authGuard';
+import { AuthGuard } from '@app/shared/authentication/authGuard';
+import { Role } from '@app/shared/authentication/role';
+import { Roles } from '@app/shared/authentication/rolesDecorator';
+import { RolesGuard } from '@app/shared/authentication/rolesGuard';
+import { FileEntity } from '@app/shared/entities/file.entity';
 import { 
   Body,
   Controller,
@@ -8,9 +12,12 @@ import {
   UseGuards,
   Delete,
   Put,
-  Query
+  Query,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateTextblockDto } from 'apps/textblock/src/dto/createTextblockDto';
 import { UpdateTextblockDto } from 'apps/textblock/src/dto/updateTextblockDto';
 
@@ -37,7 +44,17 @@ export class TextBlockController {
     }
 
     @Post('textblock/create')
-    async create(@Body() newTextblock: CreateTextblockDto) {
+    @Roles(Role.Admin)
+    @UseGuards(AuthGuard,RolesGuard)
+    @UseInterceptors(FileInterceptor('file'))
+    async create(@Body() newTextblock: CreateTextblockDto, @UploadedFile() file: FileEntity) {
+        const newFile = new FileEntity();
+        newFile.originalname = file.originalname;
+        newFile.mimetype = file.mimetype;
+        newFile.size = file.size;
+        newFile.buffer = file.buffer;
+
+        newTextblock.file = newFile;
         return this.textblockService.send(
             { cmd: 'create'},
             newTextblock
@@ -45,7 +62,15 @@ export class TextBlockController {
     }
 
     @Put('textblock/update')
-    async update(@Body() updateTextblock: UpdateTextblockDto) {
+    @UseInterceptors(FileInterceptor('file'))
+    async update(@Body() updateTextblock: UpdateTextblockDto, @UploadedFile() file: FileEntity) {
+        const newFile = new FileEntity();
+        newFile.originalname = file.originalname;
+        newFile.mimetype = file.mimetype;
+        newFile.size = file.size;
+        newFile.buffer = file.buffer;
+
+        updateTextblock.file = newFile;
         return this.textblockService.send(
             { cmd: 'update'},
             updateTextblock
